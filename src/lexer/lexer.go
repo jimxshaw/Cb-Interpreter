@@ -1,5 +1,7 @@
 package lexer
 
+import "cb-interpreter/src/token"
+
 // Lexer transforms source code to tokens.
 // For simplicity, our lexer will only read ASCII as each of its
 // character is only ever 1 byte long.
@@ -33,4 +35,42 @@ func (l *Lexer) readChar() {
 	// increment the current reading position by 1.
 	l.position = l.readPosition
 	l.readPosition++
+}
+
+// NextToken looks at the current character being examined and return
+// a token depending on which character it is.
+func (l *Lexer) NextToken() token.Token {
+	var tok token.Token
+
+	switch l.ch {
+	case '=':
+		tok = newToken(token.ASSIGN, l.ch)
+	case ';':
+		tok = newToken(token.SEMICOLON, l.ch)
+	case '(':
+		tok = newToken(token.LPAREN, l.ch)
+	case ')':
+		tok = newToken(token.RPAREN, l.ch)
+	case '{':
+		tok = newToken(token.LBRACE, l.ch)
+	case '}':
+		tok = newToken(token.RBRACE, l.ch)
+	case ',':
+		tok = newToken(token.COMMA, l.ch)
+	case '+':
+		tok = newToken(token.PLUS, l.ch)
+	case 0:
+		tok.Literal = ""
+		tok.Type = token.EOF
+	}
+
+	// Before returning the token we advance our pointers into the input
+	// so when we call NextToken() again the ch field is already updated.
+	l.readChar()
+	return tok
+}
+
+// Helper function to initialize our various tokens.
+func newToken(tokenType token.TokenType, ch byte) token.Token {
+	return token.Token{Type: tokenType, Literal: string(ch)}
 }
