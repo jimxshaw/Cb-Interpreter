@@ -14,51 +14,51 @@ type Lexer struct {
 
 // New is essentially a constructor function.
 func New(input string) *Lexer {
-	l := &Lexer{input: input}
-	l.readChar()
-	return l
+	lex := &Lexer{input: input}
+	lex.readChar()
+	return lex
 }
 
 // The purpose of this helper method is to give us the next character and
 // advance our position in the input string.
-func (l *Lexer) readChar() {
+func (lex *Lexer) readChar() {
 	// Check if we've reached the end of input. If yes then assign ch to
 	// 0, which essentially means end of file.
-	if l.readPosition >= len(l.input) {
-		l.ch = 0
+	if lex.readPosition >= len(lex.input) {
+		lex.ch = 0
 	} else {
 		// If it's not the end of input then assign ch the next character.
-		l.ch = l.input[l.readPosition]
+		lex.ch = lex.input[lex.readPosition]
 	}
 
 	// Assign the position we've just read to the current position and
 	// increment the current reading position by 1.
-	l.position = l.readPosition
-	l.readPosition++
+	lex.position = lex.readPosition
+	lex.readPosition++
 }
 
 // NextToken looks at the current character being examined and return
 // a token depending on which character it is.
-func (l *Lexer) NextToken() token.Token {
+func (lex *Lexer) NextToken() token.Token {
 	var tok token.Token
 
-	switch l.ch {
+	switch lex.ch {
 	case '=':
-		tok = newToken(token.ASSIGN, l.ch)
+		tok = newToken(token.ASSIGN, lex.ch)
 	case ';':
-		tok = newToken(token.SEMICOLON, l.ch)
+		tok = newToken(token.SEMICOLON, lex.ch)
 	case '(':
-		tok = newToken(token.LPAREN, l.ch)
+		tok = newToken(token.LPAREN, lex.ch)
 	case ')':
-		tok = newToken(token.RPAREN, l.ch)
+		tok = newToken(token.RPAREN, lex.ch)
 	case '{':
-		tok = newToken(token.LBRACE, l.ch)
+		tok = newToken(token.LBRACE, lex.ch)
 	case '}':
-		tok = newToken(token.RBRACE, l.ch)
+		tok = newToken(token.RBRACE, lex.ch)
 	case ',':
-		tok = newToken(token.COMMA, l.ch)
+		tok = newToken(token.COMMA, lex.ch)
 	case '+':
-		tok = newToken(token.PLUS, l.ch)
+		tok = newToken(token.PLUS, lex.ch)
 	case 0:
 		tok.Literal = ""
 		tok.Type = token.EOF
@@ -66,7 +66,7 @@ func (l *Lexer) NextToken() token.Token {
 
 	// Before returning the token we advance our pointers into the input
 	// so when we call NextToken() again the ch field is already updated.
-	l.readChar()
+	lex.readChar()
 	return tok
 }
 
