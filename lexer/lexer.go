@@ -1,6 +1,6 @@
 package lexer
 
-import "cb-interpreter/src/token"
+import "cb-interpreter/token"
 
 // Lexer transforms source code to tokens.
 // For simplicity, our lexer will only read ASCII as each of its

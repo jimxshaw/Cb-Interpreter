@@ -1,7 +1,7 @@
 package lexer
 
 import (
-	"cb-interpreter/src/token"
+	"cb-interpreter/token"
 	"testing"
 )
 
