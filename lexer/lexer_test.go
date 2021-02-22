@@ -6,6 +6,8 @@ import (
 )
 
 func TestNextToken(t *testing.T) {
+	// This test input looks like a subset of the Cb languages.
+	// It has all the symbols we successfully turn into tokens.
 	input := `let five = 5;
 	let ten = 10;
 
