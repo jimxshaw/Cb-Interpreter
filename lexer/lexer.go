@@ -62,6 +62,13 @@ func (lex *Lexer) NextToken() token.Token {
 	case 0:
 		tok.Literal = ""
 		tok.Type = token.EOF
+	default:
+		if isLetter(lex.ch) {
+			tok.Literal = lex.readIdentifier()
+			return tok
+		} else {
+			tok = newToken(token.ILLEGAL, lex.ch)
+		}
 	}
 
 	// Before returning the token we advance our pointers into the input
