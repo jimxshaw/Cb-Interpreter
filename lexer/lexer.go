@@ -70,7 +70,25 @@ func (lex *Lexer) NextToken() token.Token {
 	return tok
 }
 
+// Method that read in an identifier and advances our lexer's
+// positions until it hits a non-letter character.
+func (l *Lexer) readIdentifier() string {
+	position := l.position
+	for isLetter(l.ch) {
+		l.readChar()
+	}
+	return l.input[position:l.position]
+}
+
 // Helper function to initialize our various tokens.
 func newToken(tokenType token.TokenType, ch byte) token.Token {
 	return token.Token{Type: tokenType, Literal: string(ch)}
+}
+
+// Helper function checks whether the given argument is a letter.
+// The underscore _ symbol is allowed, too, which means we treat it
+// also as a letter and allow it in identifiers and keywords.
+// E.g. variable names like my_var can be used.
+func isLetter(ch byte) bool {
+	return 'a' <= ch && ch <= 'z' || 'A' <= ch && ch <= 'Z' || ch == '_'
 }
