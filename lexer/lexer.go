@@ -19,28 +19,12 @@ func New(input string) *Lexer {
 	return lex
 }
 
-// The purpose of this helper method is to give us the next character and
-// advance our position in the input string.
-func (lex *Lexer) readChar() {
-	// Check if we've reached the end of input. If yes then assign ch to
-	// 0, which essentially means end of file.
-	if lex.readPosition >= len(lex.input) {
-		lex.ch = 0
-	} else {
-		// If it's not the end of input then assign ch the next character.
-		lex.ch = lex.input[lex.readPosition]
-	}
-
-	// Assign the position we've just read to the current position and
-	// increment the current reading position by 1.
-	lex.position = lex.readPosition
-	lex.readPosition++
-}
-
 // NextToken looks at the current character being examined and return
 // a token depending on which character it is.
 func (lex *Lexer) NextToken() token.Token {
 	var tok token.Token
+
+	lex.skipWhitespace()
 
 	switch lex.ch {
 	case '=':
@@ -65,7 +49,11 @@ func (lex *Lexer) NextToken() token.Token {
 	default:
 		if isLetter(lex.ch) {
 			tok.Literal = lex.readIdentifier()
+			tok.Type = token.LookupIdent(tok.Literal)
 			return tok
+		} else if {
+			tok.Type = token.INT
+			tok.Literal = lex.readNumber()
 		} else {
 			tok = newToken(token.ILLEGAL, lex.ch)
 		}
@@ -77,6 +65,32 @@ func (lex *Lexer) NextToken() token.Token {
 	return tok
 }
 
+// The purpose of this helper method is to give us the next character and
+// advance our position in the input string.
+func (lex *Lexer) readChar() {
+	// Check if we've reached the end of input. If yes then assign ch to
+	// 0, which essentially means end of file.
+	if lex.readPosition >= len(lex.input) {
+		lex.ch = 0
+	} else {
+		// If it's not the end of input then assign ch the next character.
+		lex.ch = lex.input[lex.readPosition]
+	}
+
+	// Assign the position we've just read to the current position and
+	// increment the current reading position by 1.
+	lex.position = lex.readPosition
+	lex.readPosition++
+}
+
+func (lex *Lexer) readNumber() string {
+	position := lex.position
+	for isDigit(lex.ch) {
+		lex.readChar()
+	}
+	return lex.input[position:lex.position]
+}
+
 // Method that read in an identifier and advances our lexer's
 // positions until it hits a non-letter character.
 func (lex *Lexer) readIdentifier() string {
@@ -85,6 +99,12 @@ func (lex *Lexer) readIdentifier() string {
 		lex.readChar()
 	}
 	return lex.input[position:lex.position]
+}
+
+func (lex *Lexer) skipWhitespace() {
+	for lex.ch == ' ' || lex.ch == '\t' || lex.ch == '\n' || lex.ch == '\r' {
+		lex.readChar()
+	}
 }
 
 // Helper function to initialize our various tokens.
@@ -98,4 +118,8 @@ func newToken(tokenType token.TokenType, ch byte) token.Token {
 // E.g. variable names like my_var can be used.
 func isLetter(ch byte) bool {
 	return 'a' <= ch && ch <= 'z' || 'A' <= ch && ch <= 'Z' || ch == '_'
+}
+
+func isDigit(ch byte) bool {
+	return '0' <= ch && ch <= '9'
 }
