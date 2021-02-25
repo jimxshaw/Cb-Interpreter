@@ -19,28 +19,12 @@ func New(input string) *Lexer {
 	return lex
 }
 
-// The purpose of this helper method is to give us the next character and
-// advance our position in the input string.
-func (lex *Lexer) readChar() {
-	// Check if we've reached the end of input. If yes then assign ch to
-	// 0, which essentially means end of file.
-	if lex.readPosition >= len(lex.input) {
-		lex.ch = 0
-	} else {
-		// If it's not the end of input then assign ch the next character.
-		lex.ch = lex.input[lex.readPosition]
-	}
-
-	// Assign the position we've just read to the current position and
-	// increment the current reading position by 1.
-	lex.position = lex.readPosition
-	lex.readPosition++
-}
-
 // NextToken looks at the current character being examined and return
 // a token depending on which character it is.
 func (lex *Lexer) NextToken() token.Token {
 	var tok token.Token
+
+	lex.skipWhitespace()
 
 	switch lex.ch {
 	case '=':
@@ -78,6 +62,24 @@ func (lex *Lexer) NextToken() token.Token {
 	return tok
 }
 
+// The purpose of this helper method is to give us the next character and
+// advance our position in the input string.
+func (lex *Lexer) readChar() {
+	// Check if we've reached the end of input. If yes then assign ch to
+	// 0, which essentially means end of file.
+	if lex.readPosition >= len(lex.input) {
+		lex.ch = 0
+	} else {
+		// If it's not the end of input then assign ch the next character.
+		lex.ch = lex.input[lex.readPosition]
+	}
+
+	// Assign the position we've just read to the current position and
+	// increment the current reading position by 1.
+	lex.position = lex.readPosition
+	lex.readPosition++
+}
+
 // Method that read in an identifier and advances our lexer's
 // positions until it hits a non-letter character.
 func (lex *Lexer) readIdentifier() string {
@@ -86,6 +88,12 @@ func (lex *Lexer) readIdentifier() string {
 		lex.readChar()
 	}
 	return lex.input[position:lex.position]
+}
+
+func (lex *Lexer) skipWhitespace() {
+	for lex.ch == ' ' || lex.ch == '\t' || lex.ch == '\n' || lex.ch == '\r' {
+		lex.readChar()
+	}
 }
 
 // Helper function to initialize our various tokens.
