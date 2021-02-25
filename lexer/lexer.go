@@ -51,6 +51,9 @@ func (lex *Lexer) NextToken() token.Token {
 			tok.Literal = lex.readIdentifier()
 			tok.Type = token.LookupIdent(tok.Literal)
 			return tok
+		} else if {
+			tok.Type = token.INT
+			tok.Literal = lex.readNumber()
 		} else {
 			tok = newToken(token.ILLEGAL, lex.ch)
 		}
@@ -80,6 +83,14 @@ func (lex *Lexer) readChar() {
 	lex.readPosition++
 }
 
+func (lex *Lexer) readNumber() string {
+	position := lex.position
+	for isDigit(lex.ch) {
+		lex.readChar()
+	}
+	return lex.input[position:lex.position]
+}
+
 // Method that read in an identifier and advances our lexer's
 // positions until it hits a non-letter character.
 func (lex *Lexer) readIdentifier() string {
@@ -107,4 +118,8 @@ func newToken(tokenType token.TokenType, ch byte) token.Token {
 // E.g. variable names like my_var can be used.
 func isLetter(ch byte) bool {
 	return 'a' <= ch && ch <= 'z' || 'A' <= ch && ch <= 'Z' || ch == '_'
+}
+
+func isDigit(ch byte) bool {
+	return '0' <= ch && ch <= '9'
 }
