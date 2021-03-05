@@ -8,7 +8,9 @@ import (
 	"io"
 )
 
-const PROMPT = ">>"
+// PROMPT shows that the REPL is ready
+// to take inputs from the user.
+const PROMPT = ">> "
 
 // Start reads from the input source until encountering
 // a newline, take the read line and parse it to an
