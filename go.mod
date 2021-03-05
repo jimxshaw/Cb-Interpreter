@@ -1,3 +1,3 @@
-module cb-interpreter
+module cb
 
 go 1.16

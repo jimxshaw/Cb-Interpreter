@@ -2,8 +2,8 @@ package repl
 
 import (
 	"bufio"
-	"cb-interpreter/lexer"
-	"cb-interpreter/token"
+	"cb/lexer"
+	"cb/token"
 	"fmt"
 	"io"
 )
