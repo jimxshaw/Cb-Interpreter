@@ -96,6 +96,16 @@ func (lex *Lexer) readChar() {
 	lex.readPosition++
 }
 
+// This function doesn't increment anything, unlike readChar function.
+// This function peeks ahead in the input, while not moving around in it,
+// so as we'd know what a call to readChar() would return.
+func (lex *Lexer) peekChar() byte {
+	if lex.readPosition >= len(lex.input) {
+		return 0
+	}
+	return lex.input[lex.readPosition]
+}
+
 func (lex *Lexer) readNumber() string {
 	position := lex.position
 	for isDigit(lex.ch) {
