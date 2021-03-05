@@ -28,7 +28,22 @@ func (lex *Lexer) NextToken() token.Token {
 
 	switch lex.ch {
 	case '=':
-		tok = newToken(token.ASSIGN, lex.ch)
+		// If the current char is = then peek at the next char.
+		// If the next char is also = then it's an Equal token
+		// rather than an Assign token.
+		// The char is saved in a local variable before calling
+		// readChar() because we don't want to lose the current
+		// char and can safely advance the lexer so it leaves
+		// the NextToken() with lex.position and lex.readPosition
+		// in the right state.
+		if lex.peekChar() == '=' {
+			ch := lex.ch
+			lex.readChar()
+			literal := string(ch) + string(lex.ch)
+			tok = token.Token{Type: token.EQ, Literal: literal}
+		} else {
+			tok = newToken(token.ASSIGN, lex.ch)
+		}
 	case ';':
 		tok = newToken(token.SEMICOLON, lex.ch)
 	case '(':
@@ -46,7 +61,14 @@ func (lex *Lexer) NextToken() token.Token {
 	case '-':
 		tok = newToken(token.MINUS, lex.ch)
 	case '!':
-		tok = newToken(token.BANG, lex.ch)
+		if lex.peekChar() == '=' {
+			ch := lex.ch
+			lex.readChar()
+			literal := string(ch) + string(lex.ch)
+			tok = token.Token{Type: token.NOT_EQ, Literal: literal}
+		} else {
+			tok = newToken(token.BANG, lex.ch)
+		}
 	case '*':
 		tok = newToken(token.ASTERISK, lex.ch)
 	case '/':
